@@ -1,0 +1,32 @@
+class VacuumCleaner:
+    def __init__(self, environment, start_pos):
+        self.environment = environment
+        self.position = start_pos
+        self.cleaned = []
+
+    def clean(self):
+        print("Starting cleaning process...")
+        print(f"Initial Environment: {self.environment}")
+
+        while any(self.environment):
+            # Clean the current position
+            if self.environment[self.position] == 1:
+                print(f"Cleaning position {self.position}.")
+                self.environment[self.position] = 0
+                self.cleaned.append(self.position)
+
+            # Move to the next position
+            next_pos = (self.position + 1) % len(self.environment)
+            print(f"Moving from position {self.position} to position {next_pos}.")
+            self.position = next_pos
+
+        print("Cleaning completed!")
+        print(f"Cleaned positions: {self.cleaned}")
+        print(f"Final Environment: {self.environment}")
+
+# Example usage
+environment = [1, 0, 1, 1, 0]  # 1 represents dirty, 0 represents clean
+start_pos = 0
+
+vacuum = VacuumCleaner(environment, start_pos)
+vacuum.clean()
