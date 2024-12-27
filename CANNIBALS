@@ -1,0 +1,70 @@
+from collections import deque
+
+def is_valid_state(state):
+    m1, c1, boat, m2, c2 = state
+    if m1 < 0 or c1 < 0 or m2 < 0 or c2 < 0:
+        return False
+    if (m1 > 0 and m1 < c1) or (m2 > 0 and m2 < c2):
+        return False
+    return True
+
+def get_successors(state):
+    m1, c1, boat, m2, c2 = state
+    successors = []
+
+    if boat == 1:  # Boat on the left side
+        moves = [
+            (-1, 0, -1, 1, 0),  # One missionary to the right
+            (0, -1, -1, 0, 1),  # One cannibal to the right
+            (-2, 0, -1, 2, 0),  # Two missionaries to the right
+            (0, -2, -1, 0, 2),  # Two cannibals to the right
+            (-1, -1, -1, 1, 1)  # One missionary and one cannibal to the right
+        ]
+    else:  # Boat on the right side
+        moves = [
+            (1, 0, 1, -1, 0),  # One missionary to the left
+            (0, 1, 1, 0, -1),  # One cannibal to the left
+            (2, 0, 1, -2, 0),  # Two missionaries to the left
+            (0, 2, 1, 0, -2),  # Two cannibals to the left
+            (1, 1, 1, -1, -1)  # One missionary and one cannibal to the left
+        ]
+
+    for move in moves:
+        new_state = (m1 + move[0], c1 + move[1], boat + move[2], m2 + move[3], c2 + move[4])
+        if is_valid_state(new_state):
+            successors.append(new_state)
+
+    return successors
+
+def missionaries_and_cannibals():
+    start_state = (3, 3, 1, 0, 0)  # (missionaries_left, cannibals_left, boat_position, missionaries_right, cannibals_right)
+    goal_state = (0, 0, 0, 3, 3)
+
+    queue = deque([(start_state, [])])
+    visited = set()
+
+    while queue:
+        current_state, path = queue.popleft()
+
+        if current_state in visited:
+            continue
+
+        visited.add(current_state)
+        new_path = path + [current_state]
+
+        if current_state == goal_state:
+            return new_path
+
+        for successor in get_successors(current_state):
+            queue.append((successor, new_path))
+
+    return None
+
+# Example usage
+solution = missionaries_and_cannibals()
+if solution:
+    print("Solution:")
+    for step in solution:
+        print(step)
+else:
+    print("No solution found.")
