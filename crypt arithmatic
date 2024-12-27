@@ -1,0 +1,36 @@
+from itertools import permutations
+
+def solve_cryptarithmetic(puzzle):
+    words = puzzle.split(' ')
+    words = [word for word in words if word not in ['+', '=', '']]
+
+    unique_chars = set(''.join(words))
+    if len(unique_chars) > 10:
+        return "Too many unique characters!"
+
+    first_chars = {word[0] for word in words}
+    all_chars = list(unique_chars)
+
+    for perm in permutations(range(10), len(all_chars)):
+        char_to_digit = dict(zip(all_chars, perm))
+        if any(char_to_digit[char] == 0 for char in first_chars):
+            continue
+
+        values = [int(''.join(str(char_to_digit[c]) for c in word)) for word in words]
+
+        if sum(values[:-1]) == values[-1]:
+            solution = {char: digit for char, digit in char_to_digit.items()}
+            return solution
+
+    return "No solution found."
+
+# Example usage
+puzzle = "SEND + MORE = MONEY"
+solution = solve_cryptarithmetic(puzzle)
+
+if isinstance(solution, dict):
+    print("Solution:")
+    for char, digit in solution.items():
+        print(f"{char} = {digit}")
+else:
+    print(solution)
