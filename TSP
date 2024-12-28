@@ -1,0 +1,43 @@
+from itertools import permutations
+
+def tsp_brute_force(graph, start):
+    """
+    Solves the Traveling Salesman Problem using brute force.
+
+    :param graph: 2D list representing distances between cities
+    :param start: Starting city (index)
+    :return: Minimum cost and the path
+    """
+    n = len(graph)
+    cities = list(range(n))
+    cities.remove(start)
+
+    min_cost = float('inf')
+    best_path = None
+
+    # Generate all permutations of cities excluding the starting city
+    for perm in permutations(cities):
+        current_path = [start] + list(perm) + [start]  # Start and end at the starting city
+        current_cost = sum(graph[current_path[i]][current_path[i + 1]] for i in range(len(current_path) - 1))
+
+        if current_cost < min_cost:
+            min_cost = current_cost
+            best_path = current_path
+
+    return min_cost, best_path
+
+# Example usage
+if __name__ == "__main__":
+    # Example graph (distance matrix)
+    graph = [
+        [0, 10, 15, 20],
+        [10, 0, 35, 25],
+        [15, 35, 0, 30],
+        [20, 25, 30, 0]
+    ]
+
+    start_city = 0  # Starting city (index)
+    cost, path = tsp_brute_force(graph, start_city)
+
+    print("Minimum cost:", cost)
+    print("Path:", " -> ".join(map(str, path)))
