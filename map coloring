@@ -1,0 +1,80 @@
+def is_valid_assignment(region, color, assignment, neighbors):
+    """
+    Check if assigning a color to a region is valid.
+    
+    :param region: The region being assigned a color.
+    :param color: The color being assigned.
+    :param assignment: Current color assignment for all regions.
+    :param neighbors: Dictionary representing neighbors of each region.
+    :return: True if valid, False otherwise.
+    """
+    for neighbor in neighbors[region]:
+        if assignment.get(neighbor) == color:
+            return False
+    return True
+
+def backtrack(assignment, regions, colors, neighbors):
+    """
+    Backtracking algorithm to solve the CSP.
+    
+    :param assignment: Current color assignment for all regions.
+    :param regions: List of all regions to color.
+    :param colors: List of available colors.
+    :param neighbors: Dictionary representing neighbors of each region.
+    :return: A complete assignment if successful, None otherwise.
+    """
+    # If all regions are assigned, return the assignment
+    if len(assignment) == len(regions):
+        return assignment
+
+    # Select an unassigned region
+    unassigned = [r for r in regions if r not in assignment]
+    region = unassigned[0]
+
+    # Try each color for the current region
+    for color in colors:
+        if is_valid_assignment(region, color, assignment, neighbors):
+            assignment[region] = color
+            result = backtrack(assignment, regions, colors, neighbors)
+            if result:
+                return result
+            # Undo the assignment (backtrack)
+            del assignment[region]
+
+    return None
+
+def map_coloring(regions, colors, neighbors):
+    """
+    Solve the map coloring problem using backtracking.
+    
+    :param regions: List of regions to color.
+    :param colors: List of available colors.
+    :param neighbors: Dictionary representing neighbors of each region.
+    :return: A dictionary with the color assignment for each region.
+    """
+    return backtrack({}, regions, colors, neighbors)
+
+# Example usage
+if __name__ == "__main__":
+    # Define regions and their neighbors
+    regions = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+    neighbors = {
+        'WA': ['NT', 'SA'],
+        'NT': ['WA', 'SA', 'Q'],
+        'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+        'Q': ['NT', 'SA', 'NSW'],
+        'NSW': ['SA', 'Q', 'V'],
+        'V': ['SA', 'NSW'],
+        'T': []  # Tasmania has no neighbors
+    }
+    colors = ['Red', 'Green', 'Blue']  # Available colors
+
+    # Solve the problem
+    solution = map_coloring(regions, colors, neighbors)
+
+    if solution:
+        print("Solution found:")
+        for region, color in solution.items():
+            print(f"{region}: {color}")
+    else:
+        print("No solution found.")
