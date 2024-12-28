@@ -1,0 +1,75 @@
+import heapq
+
+def a_star_algorithm(graph, start, goal, h):
+    """
+    A* Algorithm for finding the shortest path in a graph.
+
+    :param graph: Dictionary representing the adjacency list of the graph.
+                  Each key is a node, and the value is a list of tuples (neighbor, cost).
+    :param start: The starting node.
+    :param goal: The goal node.
+    :param h: Heuristic function as a dictionary {node: heuristic_value}.
+    :return: Tuple (path, total_cost) - the shortest path and its total cost.
+    """
+    open_set = []  # Priority queue for A* algorithm
+    heapq.heappush(open_set, (0 + h[start], start))  # (f_score, node)
+
+    came_from = {}  # To reconstruct the path
+    g_score = {node: float('inf') for node in graph}  # Cost from start to each node
+    g_score[start] = 0
+
+    while open_set:
+        _, current = heapq.heappop(open_set)
+
+        if current == goal:
+            # Reconstruct path
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+            return path, g_score[goal]
+
+        for neighbor, cost in graph[current]:
+            tentative_g_score = g_score[current] + cost
+            if tentative_g_score < g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score = tentative_g_score + h[neighbor]
+                heapq.heappush(open_set, (f_score, neighbor))
+
+    return None, float('inf')  # If no path is found
+
+# Example usage
+if __name__ == "__main__":
+    # Example graph as an adjacency list
+    graph = {
+        'A': [('B', 1), ('C', 3)],
+        'B': [('D', 1), ('E', 4)],
+        'C': [('E', 1)],
+        'D': [('F', 2)],
+        'E': [('F', 1)],
+        'F': []
+    }
+
+    # Heuristic function (straight-line distance to goal)
+    heuristic = {
+        'A': 6,
+        'B': 4,
+        'C': 4,
+        'D': 2,
+        'E': 2,
+        'F': 0
+    }
+
+    start_node = 'A'
+    goal_node = 'F'
+    
+    path, cost = a_star_algorithm(graph, start_node, goal_node, heuristic)
+
+    if path:
+        print("Shortest path:", " -> ".join(path))
+        print("Total cost:", cost)
+    else:
+        print("No path found.")
