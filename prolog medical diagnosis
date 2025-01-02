@@ -1,0 +1,55 @@
+% Facts: Define diseases and their associated symptoms.
+disease(flu).
+disease(cold).
+disease(malaria).
+disease(pneumonia).
+
+% Flu symptoms
+symptom(flu, fever).
+symptom(flu, cough).
+symptom(flu, body_ache).
+symptom(flu, fatigue).
+
+% Cold symptoms
+symptom(cold, cough).
+symptom(cold, sore_throat).
+symptom(cold, nasal_congestion).
+symptom(cold, sneezing).
+
+% Malaria symptoms
+symptom(malaria, fever).
+symptom(malaria, chills).
+symptom(malaria, sweating).
+symptom(malaria, headache).
+
+% Pneumonia symptoms
+symptom(pneumonia, fever).
+symptom(pneumonia, cough).
+symptom(pneumonia, shortness_of_breath).
+symptom(pneumonia, chest_pain).
+
+% Rule: Diagnose a disease based on symptoms
+diagnose(Disease) :-
+    disease(Disease),
+    check_symptoms(Disease).
+
+% Rule: Check if all symptoms of the disease are present
+check_symptoms(Disease) :-
+    symptom(Disease, Symptom),
+    ask_user(Symptom),
+    fail.
+check_symptoms(_).
+
+% Predicate to ask the user if they have a particular symptom
+ask_user(Symptom) :-
+    format('Do you have ~w? (yes/no): ', [Symptom]),
+    read(Response),
+    (Response == yes -> true; fail).
+
+% Helper predicate to suggest a disease
+suggest_disease :-
+    diagnose(Disease),
+    format('Based on your symptoms, you may have ~w.', [Disease]).
+
+% Example query: diagnose based on symptoms
+?- suggest_disease.
