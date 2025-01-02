@@ -1,0 +1,20 @@
+% Facts: Define fruit and its color
+fruit_apple('red').
+fruit_banana('yellow').
+fruit_orange('orange').
+fruit_grape('purple').
+fruit_lemon('yellow').
+fruit_watermelon('green').
+fruit_cherry('red').
+fruit_blueberry('blue').
+fruit_peach('orange').
+
+% Rule to find the color of a fruit
+color_of_fruit(Fruit, Color) :-
+    % Use backtracking to match the fruit with its color
+    atom_concat('fruit_', Fruit, FactName),  % Construct the fact name dynamically
+    call(FactName, Color).  % Call the dynamically created fact to find the color
+
+% Example query that uses backtracking to find all fruits of a certain color
+find_fruits_by_color(Color, Fruit) :-
+    fruit_color(Fruit, Color).  % Find the fruit by color
