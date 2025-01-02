@@ -1,0 +1,50 @@
+% Initial state representation
+% state(MonkeyPosition, ChairPosition, MonkeyHasBanana)
+% MonkeyPosition and ChairPosition can be: on_floor, on_chair
+% MonkeyHasBanana can be: has, has_not
+
+% Initial state: monkey and chair are at different locations, banana is not grabbed
+initial_state(state(on_floor, at_door, has_not)).
+
+% Goal state: monkey has the banana
+goal_state(state(_, _, has)).
+
+% Possible actions:
+% Action(move(Location), Precondition, Effect)
+% Action(push(ChairLocation), Precondition, Effect)
+% Action(climb(ChairLocation), Precondition, Effect)
+% Action(grab_banana, Precondition, Effect)
+
+% Move to a new location
+action(move(Location), 
+       state(on_floor, ChairPosition, has_not), 
+       state(Location, ChairPosition, has_not)).
+
+% Push the chair to a new location
+action(push(Location), 
+       state(MonkeyPosition, MonkeyPosition, has_not), 
+       state(Location, Location, has_not)).
+
+% Climb onto the chair
+action(climb, 
+       state(ChairPosition, ChairPosition, has_not), 
+       state(on_chair, ChairPosition, has_not)).
+
+% Grab the banana (only if on the chair)
+action(grab_banana, 
+       state(on_chair, ChairPosition, has_not), 
+       state(on_chair, ChairPosition, has)).
+
+% Plan to achieve the goal using recursive state transitions
+plan(State, [], _) :- 
+    goal_state(State). % If the goal state is reached, the plan is empty (done)
+
+plan(CurrentState, [Action|RemainingPlan], VisitedStates) :- 
+    action(Action, CurrentState, NextState), % Perform an action
+    \+ member(NextState, VisitedStates),    % Avoid revisiting states
+    plan(NextState, RemainingPlan, [NextState|VisitedStates]). % Recur for next steps
+
+% Solve the problem
+solve_plan(Plan) :-
+    initial_state(InitialState),
+    plan(InitialState, Plan, [InitialState]).
