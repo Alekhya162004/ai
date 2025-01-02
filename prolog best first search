@@ -1,0 +1,39 @@
+% Facts representing the graph: edge(From, To, Cost)
+edge(a, b, 1).
+edge(a, c, 4).
+edge(b, d, 2).
+edge(c, d, 5).
+edge(b, e, 3).
+edge(d, e, 1).
+
+% Heuristic values: heuristic(Node, Value)
+heuristic(a, 4).
+heuristic(b, 2).
+heuristic(c, 3).
+heuristic(d, 1).
+heuristic(e, 0).
+
+% Best First Search: best_first_search(Start, Goal, Path)
+best_first_search(Start, Goal, Path) :-
+    best_first_search([[Start]], Goal, Path).
+
+% Main Best First Search loop
+best_first_search([Path|_], Goal, Path) :-
+    last(Path, Goal), !.  % Goal is reached, return the path.
+
+best_first_search([Path|Paths], Goal, FinalPath) :-
+    last(Path, CurrentNode),
+    findall([NextNode|Path],
+            (edge(CurrentNode, NextNode, _), \+ member(NextNode, Path), heuristic(NextNode, _)),
+            Successors),
+    % Sort Successors by heuristic value (best first)
+    sort(2, @=<, Successors, SortedSuccessors),
+    append(SortedSuccessors, Paths, NewPaths),
+    best_first_search(NewPaths, Goal, FinalPath).
+
+% Helper predicates to get last element and append new paths
+last([X], X).
+last([_|T], X) :- last(T, X).
+
+% Query Example: Find the best path from a to e
+?- best_first_search(a, e, Path).
