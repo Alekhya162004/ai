@@ -1,0 +1,26 @@
+% Facts: Define diet suggestions for specific diseases
+diet(diabetes, 'Low-sugar diet, high in fiber, whole grains, vegetables, and lean protein. Avoid sugary drinks and processed foods.').
+diet(hypertension, 'Low-sodium diet with plenty of fruits, vegetables, whole grains, and low-fat dairy products. Avoid salty snacks and processed foods.').
+diet(cardiovascular_disease, 'Heart-healthy diet rich in omega-3 fatty acids, nuts, fruits, vegetables, and whole grains. Avoid trans fats and excessive saturated fats.').
+diet(anemia, 'Iron-rich diet including red meat, spinach, lentils, and fortified cereals. Pair with vitamin C-rich foods for better absorption.').
+diet(obesity, 'Calorie-controlled diet rich in fruits, vegetables, lean protein, and whole grains. Avoid sugary and high-calorie processed foods.').
+diet(gastrointestinal_disorders, 'Bland diet with easily digestible foods like rice, bananas, applesauce, and toast. Avoid spicy and fatty foods.').
+diet(kidney_disease, 'Low-protein, low-sodium, and low-potassium diet. Limit foods high in phosphorus and monitor fluid intake.').
+diet(gluten_intolerance, 'Gluten-free diet avoiding wheat, barley, and rye. Include gluten-free grains like rice, quinoa, and corn.').
+diet(lactose_intolerance, 'Dairy-free diet or lactose-free dairy alternatives. Include calcium-fortified plant-based milk like almond or soy milk.').
+
+% Rule to suggest a diet for a disease
+suggest_diet(Disease, DietPlan) :-
+    diet(Disease, DietPlan).
+
+% Rule to list all diseases
+list_diseases :-
+    findall(Disease, diet(Disease, _), Diseases),
+    write('Available diseases for diet suggestions:'), nl,
+    print_list(Diseases).
+
+% Helper predicate to print a list
+print_list([]).
+print_list([Head|Tail]) :-
+    write('- '), write(Head), nl,
+    print_list(Tail).
