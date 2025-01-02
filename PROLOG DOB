@@ -1,0 +1,19 @@
+% Facts: name(Name, DOB).
+name(john, date(1990, 5, 15)).
+name(alice, date(1985, 8, 22)).
+name(michael, date(2000, 12, 1)).
+name(sarah, date(1995, 3, 10)).
+name(emily, date(1998, 7, 5)).
+
+% Rule to find people born in a specific year
+born_in_year(Name, Year) :-
+    name(Name, date(Year, _, _)).
+
+% Rule to find people born in a specific month
+born_in_month(Name, Month) :-
+    name(Name, date(_, Month, _)).
+
+% Rule to calculate the age of a person given the current year
+age(Name, CurrentYear, Age) :-
+    name(Name, date(Year, _, _)),
+    Age is CurrentYear - Year.
