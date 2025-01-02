@@ -1,0 +1,34 @@
+% Facts: planet(Name, Size, DistanceFromSun, Moons).
+% Size is in kilometers (diameter), DistanceFromSun is in millions of kilometers, and Moons is the number of natural satellites.
+planet(mercury, 4879, 57.9, 0).
+planet(venus, 12104, 108.2, 0).
+planet(earth, 12742, 149.6, 1).
+planet(mars, 6779, 227.9, 2).
+planet(jupiter, 139820, 778.5, 79).
+planet(saturn, 116460, 1434, 83).
+planet(uranus, 50724, 2871, 27).
+planet(neptune, 49244, 4495, 14).
+
+% Rule to find planets with a specific number of moons
+planets_with_moons(Moons, Name) :-
+    planet(Name, _, _, Moons).
+
+% Rule to find planets larger than a given size
+planets_larger_than(Size, Name) :-
+    planet(Name, PlanetSize, _, _),
+    PlanetSize > Size.
+
+% Rule to find planets closer to the Sun than a given distance
+planets_closer_than(Distance, Name) :-
+    planet(Name, _, DistanceFromSun, _),
+    DistanceFromSun < Distance.
+
+% Rule to find planets with no moons
+planets_with_no_moons(Name) :-
+    planet(Name, _, _, 0).
+
+% Rule to find the distance between two planets (approximation)
+distance_between_planets(Planet1, Planet2, Distance) :-
+    planet(Planet1, _, Distance1, _),
+    planet(Planet2, _, Distance2, _),
+    Distance is abs(Distance1 - Distance2).
