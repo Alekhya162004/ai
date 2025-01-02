@@ -1,0 +1,76 @@
+% Facts: Define parent relationships
+parent(john, mary).    % John is a parent of Mary
+parent(john, michael). % John is a parent of Michael
+parent(susan, mary).   % Susan is a parent of Mary
+parent(susan, michael).% Susan is a parent of Michael
+parent(mary, sophia).  % Mary is a parent of Sophia
+parent(mary, james).   % Mary is a parent of James
+parent(michael, anna). % Michael is a parent of Anna
+
+% Define genders
+male(john).
+male(michael).
+male(james).
+female(susan).
+female(mary).
+female(sophia).
+female(anna).
+
+% Rules: Define relationships based on facts
+
+% Father relationship
+father(Father, Child) :- 
+    parent(Father, Child), 
+    male(Father).
+
+% Mother relationship
+mother(Mother, Child) :- 
+    parent(Mother, Child), 
+    female(Mother).
+
+% Sibling relationship
+sibling(Person1, Person2) :- 
+    parent(Parent, Person1), 
+    parent(Parent, Person2), 
+    Person1 \= Person2.
+
+% Grandparent relationship
+grandparent(Grandparent, Grandchild) :- 
+    parent(Grandparent, Parent), 
+    parent(Parent, Grandchild).
+
+% Grandmother relationship
+grandmother(Grandmother, Grandchild) :- 
+    grandparent(Grandmother, Grandchild), 
+    female(Grandmother).
+
+% Grandfather relationship
+grandfather(Grandfather, Grandchild) :- 
+    grandparent(Grandfather, Grandchild), 
+    male(Grandfather).
+
+% Aunt relationship
+aunt(Aunt, NieceOrNephew) :- 
+    parent(Parent, NieceOrNephew), 
+    sibling(Aunt, Parent), 
+    female(Aunt).
+
+% Uncle relationship
+uncle(Uncle, NieceOrNephew) :- 
+    parent(Parent, NieceOrNephew), 
+    sibling(Uncle, Parent), 
+    male(Uncle).
+
+% Cousin relationship
+cousin(Person1, Person2) :- 
+    parent(Parent1, Person1), 
+    parent(Parent2, Person2), 
+    sibling(Parent1, Parent2).
+
+% Ancestor relationship
+ancestor(Ancestor, Descendant) :- 
+    parent(Ancestor, Descendant).
+
+ancestor(Ancestor, Descendant) :- 
+    parent(Ancestor, Intermediate), 
+    ancestor(Intermediate, Descendant).
